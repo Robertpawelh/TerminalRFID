@@ -121,7 +121,7 @@ def registration(card_id, terminal_id):
     if card_id in registrations:
         data = registrations[card_id]
         if worker in data:
-            if (len(data[worker]['begin'])==len (data[worker]['end'])):
+            if len(data[worker]['begin']) == len(data[worker]['end']):
                 data[worker]['begin'].append(date)
                 data[worker]['begin_t'].append(terminal_id)
                 logger.log(f"Worker started job at {date}")
@@ -143,6 +143,7 @@ def registration(card_id, terminal_id):
             logger.log(f"New unidentified registration at {date}")
 
     write_data(registrations_filename, registrations)
+
 
 def delete_all_data():
     global terminals, cards, workers, registrations
