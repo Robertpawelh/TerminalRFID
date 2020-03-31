@@ -17,9 +17,27 @@ def write_data(path, data):
         json.dump(data, f, indent=2)
 
 workers = read_data(workers_filename)
-#cards = read_data(cards_filename)
-#terminals = read_data(terminals_filename)
+cards = read_data(cards_filename)
+terminals = read_data(terminals_filename)
 registrations = read_data(registrations_filename)
+
+def add_terminal(terminal_id):
+    terminal = {'terminalId': terminal_id}
+    terminals.append(terminal)
+    write_data(terminals_filename, terminals)
+
+def remove_terminal(terminal_id):
+    terminals.remove(terminal_id)
+    write_data(terminals_filename, terminals)
+
+def add_card(card_id):
+    card = {'cardId': card_id}
+    cards.append(card)
+    write_data(cards_filename, cards)
+
+def remove_card(card_id):
+    cards.remove(card_id)
+    write_data(cards_filename, cards)
 
 def add_worker(name):
     id = uuid.uuid1().int
