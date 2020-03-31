@@ -20,19 +20,26 @@ def add_terminal_ui():
     add_terminal(name, id)
 
 def remove_terminal_ui():
-    if len(terminals)==0: return
+    if len(terminals)==0:
+        logger.log("No terminals available")
+        return
     terminal_id = choose_from_dict(terminals, "Select terminal ID: ")
     remove_terminal(terminal_id)
 
 def assign_card_ui():
-    if len(workers)==0 or len(cards)==0: return
+    if len(workers)==0 or len(cards)==0:
+        logger.log("No workers or cards available")
+        return
     worker_id = choose_from_dict(workers, "Select worker ID: ")
     card_id = choose_from_dict(cards, "Select card ID: ")
     assign_card_id(worker_id, card_id)
 
 def unassign_card_ui():
-    if len(workers)==0: return
-    worker_id = choose_from_dict(workers, "Select worker ID: ")
+    filtered_workers = dict(filter(lambda data: data[1]['card_id'], workers.items()))
+    if len(filtered_workers)==0:
+        logger.log("No workers with card")
+        return
+    worker_id = choose_from_dict(filtered_workers, "Select worker ID: ")
     unassign_card_id(worker_id)
 
 def simulate_client():
@@ -44,13 +51,17 @@ def simulate_client():
     return card_id, terminal_id
 
 def register_ui():
-    if len(terminals)==0: return
+    if len(terminals)==0:
+        logger.log("No terminals available")
+        return
     card_id, terminal_id = simulate_client()
     registration(card_id, terminal_id)
 
 def generate_report_ui():
-    if len(workers)==0: return
     filtered_workers = dict(filter(lambda data: data[1]['card_id'], workers.items()))
+    if len(filtered_workers)==0:
+        logger.log("Can't generate a report")
+        return
     worker_id = choose_from_dict(filtered_workers, "Select worker ID: ")
     generate_report(worker_id)
 

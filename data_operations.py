@@ -90,10 +90,9 @@ def assign_card_id(worker_id, card_id):
 def unassign_card_id(worker_id):
     if worker_id in workers:
         if 'card_id' in workers[worker_id]:
-            worker = {'name': workers[worker_id]['name']}
             card_id = workers[worker_id]['card_id']
+            workers[worker_id]['card_id'] = None
             cards[card_id]['owner_id'] = None
-            workers[worker_id] = worker
             write_data(workers_filename, workers)
             write_data(cards_filename, cards)
         logger.log(f"{worker_id} now doesn't have card_id")
