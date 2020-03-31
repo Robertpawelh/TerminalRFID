@@ -5,6 +5,7 @@ Pobieramy projekt i uruchamiamy plik main.py
 
 ## Elementy składowe
 ```data/``` - folder zawierający pliki ```.json``` przechowujące dane
+
 Dane są przechowywane w formie słownika, którego kluczami są indywidualne identyfikatory, natomiast wartościami dane o danym elemencie
 Przykładowy plik ```data/workers.json```
 ```
