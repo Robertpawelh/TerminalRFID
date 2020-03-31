@@ -1,6 +1,6 @@
 import json
 import uuid
-import datetime
+from datetime import datetime
 import logger
 
 workers_filename = "data/workers.json"
@@ -47,7 +47,7 @@ def remove_data(path, dictionary, id):
 
 def add_worker(name):
     id = uuid.uuid1().int
-    worker_data = {'name': name}
+    worker_data = {'name': name, 'card_id': None}
     add_data_to_id(workers_filename, workers, worker_data, id)
 
 
@@ -102,7 +102,7 @@ def unassign_card_id(worker_id):
 
 
 def registration(card_id, terminal_id):
-    date = str(datetime.datetime.now())
+    date = str(datetime.now())
 
     if card_id in registrations:
         data = registrations[card_id]
