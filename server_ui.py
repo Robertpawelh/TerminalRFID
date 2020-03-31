@@ -79,11 +79,7 @@ def register_ui():
 
 
 def generate_report_ui():
-    filtered_workers = workers  # dict(filter(lambda data: data[1]['card_id'], workers.items()))
-    if len(filtered_workers) == 0:
-        logger.log("Can't generate a report")
-        return
-    worker_id = choose_from_dict(filtered_workers, "Select worker ID: ")
+    worker_id = choose_from_dict(workers, "Select worker ID: ")
     generate_report(worker_id)
 
 

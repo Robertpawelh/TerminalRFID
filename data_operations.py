@@ -111,15 +111,16 @@ def unassign_card_id(worker_id):
 
 def registration(card_id, terminal_id):
     date = str(datetime.now())
-
-    worker = None
-    for worker_id, worker_data in workers.items():
-        if 'card_id' in worker_data:
-            if card_id == worker_data['card_id']:
-                worker = worker_id
+    if card_id in cards:
+        worker = cards[card_id]['owner_id']
+        if not worker:
+            worker = 'UNKNOWN'
+    else:
+        worker = 'UNKNOWN'
 
     if card_id in registrations:
         data = registrations[card_id]
+
         if worker in data:
             if len(data[worker]['begin']) == len(data[worker]['end']):
                 data[worker]['begin'].append(date)
@@ -130,16 +131,13 @@ def registration(card_id, terminal_id):
                 data[worker]['end_t'].append(terminal_id)
                 logger.log(f"Worker finished job at {date}")
         else:
-            if worker:
-                registrations[card_id][worker] = {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}
-            else:
-                registrations[card_id]['UNKNOWN'] = {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}
+            data[worker] = {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}
+
     else:
+        registrations[card_id] = {worker: {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}}
         if worker:
-            registrations[card_id] = {worker: {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}}
             logger.log(f"New registration at {date}")
         else:
-            registrations[card_id] = {'UNKNOWN': {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}}
             logger.log(f"New unidentified registration at {date}")
 
     write_data(registrations_filename, registrations)
