@@ -5,13 +5,16 @@ from data_operations import *
 def generate_report(worker_id):
     filename = workers[worker_id]['name'] + "_WORK_TIME_report.csv"
     with open(filename, 'w', newline='') as file:
-        csv_columns = ["Enter Terminal", "Enter Time", "Exit Terminal", "Exit Time"]
+        csv_columns = ["Enter Terminal", "Enter Time", "Exit Terminal", "Exit Time", "Card ID"]
+        filtered_registrations = dict(filter(lambda data: worker_id in data[1].keys(), registrations.items()))
         writer = csv.writer(file)
         writer.writerow(csv_columns)
-        reg = registrations[workers[worker_id]['card_id']]
-        for i in range(len(reg['end'])):
-            print(reg['begin'][i])
-            writer.writerow([reg['begin_t'][i], reg['begin'][i], reg['end_t'][i], reg['end'][i]])
+        for card_id, data in filtered_registrations.items():
+            worker_info = data[worker_id]
+            loop_len = len(worker_info['end'])
+            for i in range(loop_len):
+                print(worker_info['begin'][i])
+                writer.writerow([worker_info['begin_t'][i], worker_info['begin'][i], worker_info['end_t'][i], worker_info['end'][i], card_id])
 
-        if len(reg['begin']) > len(reg['end']):
-            writer.writerow([reg['begin_t'][i], reg['begin'][i]])
+            if len(worker_info['begin']) > loop_len:
+                writer.writerow([worker_info['begin_t'][loop_len], worker_info['begin'][loop_len], None, None, card_id])

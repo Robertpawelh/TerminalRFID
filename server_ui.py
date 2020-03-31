@@ -5,13 +5,24 @@ from reports import generate_report
 
 keyboard.add_hotkey('Esc', lambda: sys.exit())
 
+def extended_input(min, max, label=""):
+    while True:
+        try:
+            num = int(input(label))
+            if num >= min and num < max:
+                return num
+            print(f"Number should be between {min} and {max-1}")
+        except Exception:
+            print("Invalid input")
+
 def choose_from_dict(dict, label):
     print(f"\n{label}")
     for i, data in enumerate(dict):
         print(f"({i}). {data} {dict[data]}")
-    num = input()
+    print(f"({i+1}). CANCEL")
+    num = extended_input(0, len(dict.keys())+1)
+    if num == i+1: return None
     id = list(dict.items())[int(num)][0]
-
     return id
 
 def add_terminal_ui():
@@ -24,7 +35,8 @@ def remove_terminal_ui():
         logger.log("No terminals available")
         return
     terminal_id = choose_from_dict(terminals, "Select terminal ID: ")
-    remove_terminal(terminal_id)
+    if terminal_id:
+        remove_terminal(terminal_id)
 
 def assign_card_ui():
     if len(workers)==0 or len(cards)==0:
@@ -32,7 +44,8 @@ def assign_card_ui():
         return
     worker_id = choose_from_dict(workers, "Select worker ID: ")
     card_id = choose_from_dict(cards, "Select card ID: ")
-    assign_card_id(worker_id, card_id)
+    if worker_id and card_id:
+        assign_card_id(worker_id, card_id)
 
 def unassign_card_ui():
     filtered_workers = dict(filter(lambda data: data[1]['card_id'], workers.items()))
@@ -40,10 +53,11 @@ def unassign_card_ui():
         logger.log("No workers with card")
         return
     worker_id = choose_from_dict(filtered_workers, "Select worker ID: ")
-    unassign_card_id(worker_id)
+    if worker_id:
+        unassign_card_id(worker_id)
 
 def simulate_client():
-    test_cards = cards
+    test_cards = dict.copy(cards)
     test_cards['[176, 111, 225, 37, 27]'] = {}
     test_cards['[217, 125, 80, 211, 39]'] = {}
     card_id = choose_from_dict(test_cards, "Choose card ID: ")
@@ -55,10 +69,11 @@ def register_ui():
         logger.log("No terminals available")
         return
     card_id, terminal_id = simulate_client()
-    registration(card_id, terminal_id)
+    if card_id and terminal_id:
+        registration(card_id, terminal_id)
 
 def generate_report_ui():
-    filtered_workers = dict(filter(lambda data: data[1]['card_id'], workers.items()))
+    filtered_workers = workers#dict(filter(lambda data: data[1]['card_id'], workers.items()))
     if len(filtered_workers)==0:
         logger.log("Can't generate a report")
         return
@@ -70,9 +85,10 @@ def add_worker_ui():
     add_worker(name)
 
 def remove_worker_ui():
-    if len(terminals): return
-    worker_id = choose_from_dict(terminals, "Select worker ID: ")
-    remove_worker(worker_id)
+    if len(workers)==0: return
+    worker_id = choose_from_dict(workers, "Select worker ID: ")
+    if worker_id:
+        remove_worker(worker_id)
 
 def add_card_ui():
     name = input("Enter card name: ")
@@ -80,9 +96,10 @@ def add_card_ui():
     add_card(name, card_id)
 
 def remove_card_ui():
-    if len(cards): return
+    if len(cards)==0: return
     card_id = choose_from_dict(cards, "Select card ID: ")
-    remove_card(card_id)
+    if card_id:
+        remove_card(card_id)
 
 def other_functions_ui():
     menu = [        ("Add worker", add_worker_ui),
@@ -112,7 +129,7 @@ def server_run():
     while(True):
         for i, command in enumerate(menu):
             print(f"({i+1}). {command[0]}")
-        choice = input()
+        choice = extended_input(1, len(menu)+1)
         function = menu[int(choice)-1][1]
         function()
 

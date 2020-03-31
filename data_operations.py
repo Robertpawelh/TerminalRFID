@@ -76,6 +76,9 @@ def remove_terminal(terminal_id):
 def assign_card_id(worker_id, card_id):
     if worker_id in workers and card_id in cards:
         if not cards[card_id]['owner_id']:
+            previous_card = workers[worker_id]['card_id']
+            if previous_card:
+                cards[previous_card]['owner_id'] = None
             workers[worker_id]['card_id'] = card_id
             cards[card_id]['owner_id'] = worker_id
             write_data(workers_filename, workers)
@@ -103,28 +106,34 @@ def unassign_card_id(worker_id):
 def registration(card_id, terminal_id):
     date = str(datetime.now())
 
+    worker = None
+    for worker_id, worker_data in workers.items():
+        if 'card_id' in worker_data:
+            if card_id == worker_data['card_id']:
+                worker = worker_id
+
     if card_id in registrations:
         data = registrations[card_id]
-        if (len(data['begin'])==len (data['end'])):
-            data['begin'].append(date)
-            data['begin_t'].append(terminal_id)
-            logger.log(f"Worker started job at {date}")
+        if worker in data:
+            if (len(data[worker]['begin'])==len (data[worker]['end'])):
+                data[worker]['begin'].append(date)
+                data[worker]['begin_t'].append(terminal_id)
+                logger.log(f"Worker started job at {date}")
+            else:
+                data[worker]['end'].append(date)
+                data[worker]['end_t'].append(terminal_id)
+                logger.log(f"Worker finished job at {date}")
         else:
-            data['end'].append(date)
-            data['end_t'].append(terminal_id)
-            logger.log(f"Worker finished job at {date}")
+            if worker:
+                registrations[card_id][worker] = {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}
+            else:
+                registrations[card_id]['UNKNOWN'] = {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}
     else:
-        worker = None
-        for worker_id, worker_data in workers.items():
-            if 'card_id' in worker_data:
-                if card_id == worker_data['card_id']:
-                    worker = worker_id
-
         if worker:
-            registrations[card_id] = {'worker_id': worker, 'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}
+            registrations[card_id] = {worker: {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}}
             logger.log(f"New registration at {date}")
         else:
-            registrations[card_id] = {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}
+            registrations[card_id] = {'UNKNOWN': {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}}
             logger.log(f"New unidentified registration at {date}")
 
     write_data(registrations_filename, registrations)
