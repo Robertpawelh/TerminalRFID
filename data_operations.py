@@ -102,27 +102,40 @@ def unassign_card_id(worker_id):
 
 
 def registration(card_id, terminal_id):
-    worker = None
-    for worker_id, worker_data in workers.items():
-        if 'card_id' in worker_data:
-            if card_id == worker_data['card_id']:
-                worker = worker_id
     date = str(datetime.datetime.now())
-    if worker:
-        registrations.append({'worker_id': worker, 'card_id': card_id, 'date': date, 'terminal_id': terminal_id})
-        logger.log(f"New registration at {date}")
-    else:
-        registrations.append({'card_id': card_id, 'date': date, 'terminal_id': terminal_id})
-        logger.log(f"New unidentified registration at {date}")
-    write_data(registrations_filename, registrations)
 
+    if card_id in registrations:
+        data = registrations[card_id]
+        if (len(data['begin'])==len (data['end'])):
+            data['begin'].append(date)
+            data['begin_t'].append(terminal_id)
+            logger.log(f"Worker started job at {date}")
+        else:
+            data['end'].append(date)
+            data['end_t'].append(terminal_id)
+            logger.log(f"Worker finished job at {date}")
+    else:
+        worker = None
+        for worker_id, worker_data in workers.items():
+            if 'card_id' in worker_data:
+                if card_id == worker_data['card_id']:
+                    worker = worker_id
+
+        if worker:
+            registrations[card_id] = {'worker_id': worker, 'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}
+            logger.log(f"New registration at {date}")
+        else:
+            registrations[card_id] = {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}
+            logger.log(f"New unidentified registration at {date}")
+
+    write_data(registrations_filename, registrations)
 
 def delete_all_data():
     global terminals, cards, workers, registrations
     terminals = {}
     cards = {}
     workers = {}
-    registrations = []
+    registrations = {}
     write_data(terminals_filename, terminals)
     write_data(cards_filename, cards)
     write_data(workers_filename, workers)
