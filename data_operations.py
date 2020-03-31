@@ -52,6 +52,9 @@ def add_worker(name):
 
 
 def remove_worker(worker_id):
+    card_id = workers[worker_id]['card_id']
+    if card_id:
+        cards[card_id]['owner_id'] = None
     remove_data(workers_filename, workers, worker_id)
 
 
@@ -61,6 +64,9 @@ def add_card(name, card_id):
 
 
 def remove_card(card_id):
+    worker_id = cards[card_id]['owner_id']
+    if worker_id:
+        workers[worker_id]['card_id'] = None
     remove_data(cards_filename, cards, card_id)
 
 

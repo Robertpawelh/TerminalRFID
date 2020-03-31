@@ -132,5 +132,3 @@ def server_run():
         choice = extended_input(1, len(menu)+1)
         function = menu[int(choice)-1][1]
         function()
-
-server_run()
