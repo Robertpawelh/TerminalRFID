@@ -27,11 +27,11 @@ terminals = read_data(terminals_filename)
 registrations = read_data(registrations_filename)
 
 
-def add_name_to_id(path, dictionary, name, id):
+def add_data_to_id(path, dictionary, data, id):
     if id not in dictionary:
-        dictionary[id] = {'name': name}
+        dictionary[id] = data
         write_data(path, dictionary)
-        logger.log(f"{name} added")
+        logger.log(f"New element added to {path}")
     else:
         logger.log(f"{id} already exists")
 
@@ -47,7 +47,8 @@ def remove_data(path, dictionary, id):
 
 def add_worker(name):
     id = uuid.uuid1().int
-    add_name_to_id(workers_filename, workers, name, id)
+    worker_data = {'name': name}
+    add_data_to_id(workers_filename, workers, worker_data, id)
 
 
 def remove_worker(worker_id):
@@ -55,7 +56,8 @@ def remove_worker(worker_id):
 
 
 def add_card(name, card_id):
-    add_name_to_id(cards_filename, cards, name, card_id)
+    card_data = {'name': name, 'owner_id': None}
+    add_data_to_id(cards_filename, cards, card_data, card_id)
 
 
 def remove_card(card_id):
@@ -63,7 +65,8 @@ def remove_card(card_id):
 
 
 def add_terminal(name, terminal_id):
-    add_name_to_id(terminals_filename, terminals, name, terminal_id)
+    terminal_data = {'name': name}
+    add_data_to_id(terminals_filename, terminals, terminal_data, terminal_id)
 
 
 def remove_terminal(terminal_id):
@@ -72,18 +75,27 @@ def remove_terminal(terminal_id):
 
 def assign_card_id(worker_id, card_id):
     if worker_id in workers and card_id in cards:
-        workers[worker_id]['card_id'] = card_id
-        write_data(workers_filename, workers)
-        logger.log(f"{card_id} assigned to {worker_id}")
+        if not cards[card_id]['owner_id']:
+            workers[worker_id]['card_id'] = card_id
+            cards[card_id]['owner_id'] = worker_id
+            write_data(workers_filename, workers)
+            write_data(cards_filename, cards)
+            logger.log(f"{card_id} assigned to {worker_id}")
+        else:
+            logger.log("Card is already assigned")
     else:
         logger.log("Operation didn't succeed")
 
 
 def disassign_card_id(worker_id):
     if worker_id in workers:
-        worker = {'name': workers[worker_id]['name']}
-        workers[worker_id] = worker
-        write_data(workers_filename, workers)
+        if 'card_id' in workers[worker_id]:
+            worker = {'name': workers[worker_id]['name']}
+            card_id = workers[worker_id]['card_id']
+            cards[card_id]['owner_id'] = None
+            workers[worker_id] = worker
+            write_data(workers_filename, workers)
+            write_data(cards_filename, cards)
         logger.log(f"{worker_id} now doesn't have card_id")
     else:
         logger.log("Worker doesn't exist")
