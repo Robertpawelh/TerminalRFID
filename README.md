@@ -96,3 +96,13 @@ UI opiera się głównie na obsłudze wejścia oraz jego błędów. Poprzez wpis
 (8). Exit
 ```
 Symulacja czytnika kart polega na wyborze numeru karty spośród dostępnych w bazie. Do wyboru są dodatkowo dwie nieistniejące w bazie karty. Następnie wybierany jest terminal i odczyt zostaje zarejestrowany w bazie
+
+```
+def simulate_client():
+    test_cards = dict.copy(cards)
+    test_cards['[176, 111, 225, 37, 27]'] = {}
+    test_cards['[217, 125, 80, 211, 39]'] = {}
+    card_id = choose_from_dict(test_cards, "Choose card ID: ")
+    terminal_id = choose_from_dict(terminals, "Select terminal ID: ")
+    return card_id, terminal_id
+```
