@@ -87,7 +87,7 @@ def assign_card_id(worker_id, card_id):
         logger.log("Operation didn't succeed")
 
 
-def disassign_card_id(worker_id):
+def unassign_card_id(worker_id):
     if worker_id in workers:
         if 'card_id' in workers[worker_id]:
             worker = {'name': workers[worker_id]['name']}
@@ -116,11 +116,8 @@ def registration(card_id, terminal_id):
         logger.log(f"New unidentified registration at {date}")
     write_data(registrations_filename, registrations)
 
-def generate_raport(client):
-    pass
 
-
-def hard_reset():
+def delete_all_data():
     global terminals, cards, workers, registrations
     terminals = {}
     cards = {}
@@ -131,34 +128,3 @@ def hard_reset():
     write_data(workers_filename, workers)
     write_data(registrations_filename, registrations)
     logger.log("Deleted all data")
-
-
-""" RASPBERRY PI METHOD TO SERVICE RFID
-import time
-import RPi.GPIO as GPIO
-from config import *  # pylint: disable=unused-wildcard-import
-import lib.rfid.MFRC522 as MFRC522
-import signal
-
-def rfidRead():
-    MIFAREReader = MFRC522.MFRC522()
-    print("Press the red or green button to exit this test.")
-    while GPIO.input(buttonRed) and GPIO.input(buttonGreen):
-        (status, TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
-        if status == MIFAREReader.MI_OK:
-            (status, uid) = MIFAREReader.MFRC522_Anticoll()
-            if status == MIFAREReader.MI_OK:
-                num = 0
-                for i in range(0, len(uid)):
-                    num += uid[i] << (i * 8)
-                print(f"Card read UID: {uid} > {num}")
-                time.sleep(0.5)
-    print("RFID disabled")
-    time.sleep(0.5)
-
-
-def test():
-    print('\nRFID test.')
-    rfidRead()
-
-"""
