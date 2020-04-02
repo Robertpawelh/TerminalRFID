@@ -82,10 +82,7 @@ def remove_terminal(terminal_id):
 def assign_card_id(worker_id, card_id):
     if worker_id in workers and card_id in cards:
         if not cards[card_id]['owner_id']:
-            previous_card = workers[worker_id]['card_id']
-            if previous_card:
-                cards[previous_card]['owner_id'] = None
-            workers[worker_id]['card_id'] = card_id
+            workers[worker_id]['card_id'].append(card_id)
             cards[card_id]['owner_id'] = worker_id
             write_data(workers_filename, workers)
             write_data(cards_filename, cards)
@@ -96,15 +93,16 @@ def assign_card_id(worker_id, card_id):
         logger.log("Operation didn't succeed")
 
 
-def unassign_card_id(worker_id):
+def unassign_card_id(worker_id, card_id):
     if worker_id in workers:
-        if 'card_id' in workers[worker_id]:
-            card_id = workers[worker_id]['card_id']
-            workers[worker_id]['card_id'] = None
+        if card_id in workers[worker_id]['card_id']:
+            workers[worker_id]['card_id'].remove(card_id)
             cards[card_id]['owner_id'] = None
             write_data(workers_filename, workers)
             write_data(cards_filename, cards)
-        logger.log(f"{worker_id} now doesn't have card_id")
+            logger.log(f"{worker_id} now doesn't have {card_id} assigned")
+        else:
+            logger.log(f"{worker_id} didn't have this card_id")
     else:
         logger.log("Worker doesn't exist")
 
@@ -112,7 +110,7 @@ def unassign_card_id(worker_id):
 def registration(card_id, terminal_id):
     date = str(datetime.now())
     if card_id in cards:
-        worker = cards[card_id]['owner_id']
+        worker = str(cards[card_id]['owner_id'])
         if not worker:
             worker = 'UNKNOWN'
     else:

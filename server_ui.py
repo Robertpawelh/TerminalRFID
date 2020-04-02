@@ -24,6 +24,16 @@ def choose_from_dict(dict, label):
     id = list(dict.items())[int(num)][0]
     return id
 
+def choose_from_list(list, label):
+    print(f"\n{label}")
+    for i, data in enumerate(list):
+        print(f"({i}). {data}")
+    print(f"({i + 1}). CANCEL")
+    num = extended_input(0, len(list) + 1)
+    if num == i + 1: return None
+    id = list[num]
+    return id
+
 
 def add_terminal_ui():
     name = input("Enter terminal name: ")
@@ -57,7 +67,9 @@ def unassign_card_ui():
         return
     worker_id = choose_from_dict(filtered_workers, "Select worker ID: ")
     if worker_id:
-        unassign_card_id(worker_id)
+        card_id = choose_from_list(workers[worker_id]['card_id'], "Select card ID: ")
+        if card_id:
+            unassign_card_id(worker_id, card_id)
 
 
 def simulate_client():
@@ -112,9 +124,13 @@ def remove_card_ui():
 def run_menu(menu):
     for i, command in enumerate(menu):
         print(f"({i + 1}). {command[0]}")
-    choice = extended_input(1, len(menu)+1)
+    i += 1
+    print(f"({i + 1}). CANCEL")
+    choice = extended_input(1, len(menu) + 2)
+    if choice == i + 1: return
     function = menu[int(choice) - 1][1]
     function()
+
 
 def other_functions_ui():
     menu = [("Add worker", add_worker_ui),
@@ -123,7 +139,6 @@ def other_functions_ui():
             ("Remove card", remove_card_ui),
             ("DANGEROUS. Delete all data", delete_all_data)
             ]
-
     run_menu(menu)
 
 
@@ -133,7 +148,7 @@ def server_run():
         ("Remove terminal", remove_terminal_ui),
         ("Assign card to worker", assign_card_ui),
         ("Unassign card from worker", unassign_card_ui),
-        ("Register", register_ui),
+        ("Register manually", register_ui),
         ("Generate report", generate_report_ui),
         ("Other", other_functions_ui),
         ("Exit", sys.exit)
