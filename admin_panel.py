@@ -1,6 +1,6 @@
 import sys
-from data_operations import *
-from reports import generate_report
+from app.data_operations import *
+from app.reports import generate_report
 
 
 def extended_input(min, max, label=""):
@@ -23,6 +23,7 @@ def choose_from_dict(dict, label):
     if num == i + 1: return None
     id = list(dict.items())[int(num)][0]
     return id
+
 
 def choose_from_list(list, label):
     print(f"\n{label}")
@@ -92,7 +93,8 @@ def register_ui():
 
 def generate_report_ui():
     worker_id = choose_from_dict(workers, "Select worker ID: ")
-    generate_report(worker_id)
+    if worker_id:
+       generate_report(worker_id)
 
 
 def add_worker_ui():
@@ -141,8 +143,7 @@ def other_functions_ui():
             ]
     run_menu(menu)
 
-
-def server_run():
+def admin_panel_run():
     menu = [
         ("Add terminal", add_terminal_ui),
         ("Remove terminal", remove_terminal_ui),
@@ -153,5 +154,9 @@ def server_run():
         ("Other", other_functions_ui),
         ("Exit", sys.exit)
     ]
+
     while True:
         run_menu(menu)
+
+if __name__ == "__main__":
+    admin_panel_run()

@@ -1,5 +1,5 @@
 import csv
-from data_operations import *
+from app.data_operations import *
 
 
 def generate_report(worker_id):

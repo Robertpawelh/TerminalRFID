@@ -1,7 +1,7 @@
 import json
 import uuid
 from datetime import datetime
-import logger
+from app import logger
 
 workers_filename = "data/workers.json"
 cards_filename = "data/cards.json"
@@ -108,6 +108,7 @@ def unassign_card_id(worker_id, card_id):
 
 
 def registration(card_id, terminal_id):
+
     date = str(datetime.now())
     if card_id in cards:
         worker = str(cards[card_id]['owner_id'])
