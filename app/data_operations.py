@@ -108,18 +108,22 @@ def unassign_card_id(worker_id, card_id):
 
 
 def registration(card_id, terminal_id):
+    if terminal_id not in terminals:
+        logger.log("Unknown terminal. Registration stopped")
+        return
 
     date = str(datetime.now())
+
     if card_id in cards:
-        worker = str(cards[card_id]['owner_id'])
-        if not worker:
-            worker = 'UNKNOWN'
+        worker = cards[card_id]['owner_id'] or 'UNKNOWN'
     else:
         worker = 'UNKNOWN'
 
+    if worker is 'UNKNOWN':
+        print('Unidentified card. ', end='')
+
     if card_id in registrations:
         data = registrations[card_id]
-
         if worker in data:
             if len(data[worker]['begin']) == len(data[worker]['end']):
                 data[worker]['begin'].append(date)
@@ -134,10 +138,7 @@ def registration(card_id, terminal_id):
 
     else:
         registrations[card_id] = {worker: {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}}
-        if worker:
-            logger.log(f"New registration at {date}")
-        else:
-            logger.log(f"New unidentified registration at {date}")
+        logger.log(f"Registration at {date}")
 
     write_data(registrations_filename, registrations)
 

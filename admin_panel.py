@@ -149,7 +149,7 @@ def admin_panel_run():
         ("Remove terminal", remove_terminal_ui),
         ("Assign card to worker", assign_card_ui),
         ("Unassign card from worker", unassign_card_ui),
-        ("Register manually", register_ui),
+#        ("Register", register_ui),
         ("Generate report", generate_report_ui),
         ("Other", other_functions_ui),
         ("Exit", sys.exit)
