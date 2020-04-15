@@ -27,6 +27,7 @@ def call_msg(card_id):
 def scan():
     a = input("Enter example data")
     call_msg(a)
+    # zmienic na keyboard i delay na usera?
 
 
 def client_run():
