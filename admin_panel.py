@@ -7,7 +7,7 @@ def extended_input(min, max, label=""):
     while True:
         try:
             num = int(input(label))
-            if num >= min and num < max:
+            if min <= num < max:
                 return num
             print(f"Number should be between {min} and {max - 1}")
         except Exception:
@@ -94,7 +94,7 @@ def register_ui():
 def generate_report_ui():
     worker_id = choose_from_dict(workers, "Select worker ID: ")
     if worker_id:
-       generate_report(worker_id)
+        generate_report(worker_id)
 
 
 def add_worker_ui():
@@ -143,13 +143,14 @@ def other_functions_ui():
             ]
     run_menu(menu)
 
+
 def admin_panel_run():
     menu = [
         ("Add terminal", add_terminal_ui),
         ("Remove terminal", remove_terminal_ui),
         ("Assign card to worker", assign_card_ui),
         ("Unassign card from worker", unassign_card_ui),
-#        ("Register", register_ui),
+        ("Register", register_ui),
         ("Generate report", generate_report_ui),
         ("Other", other_functions_ui),
         ("Exit", sys.exit)
@@ -157,6 +158,7 @@ def admin_panel_run():
 
     while True:
         run_menu(menu)
+
 
 if __name__ == "__main__":
     admin_panel_run()

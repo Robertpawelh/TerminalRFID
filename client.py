@@ -5,6 +5,8 @@ import time
 from settings import scan_topic, broker_address, cards
 
 terminal_id = sys.argv[1] if len(sys.argv) > 1 else "UNDEFINED"
+keys_shift = int(sys.argv[2]) if len(sys.argv) > 2 else 1
+
 client = mqtt.Client(terminal_id)
 
 
@@ -12,11 +14,11 @@ def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connection established")
     else:
-        print("Bad connection")
+        print(f"Couldn't connect to the broker {broker_address}")
 
 
 def on_disconnect():
-    print("Disconnected from broker")
+    print("Disconnected from the broker")
 
 
 def call_msg(card_id):
@@ -25,7 +27,7 @@ def call_msg(card_id):
 
 def scan():
     for index, card in enumerate(cards):
-        if keyboard.is_pressed(f"{index+1}"):
+        if keyboard.is_pressed(f"{(index+keys_shift) % 10}"):
             print("Scanning")
             call_msg(cards[index])
             time.sleep(1)

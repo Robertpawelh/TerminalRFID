@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-from app.data_operations import registration, terminals
+from app.data_operations import registration
 from settings import scan_topic, broker_address
 
 client = mqtt.Client()
@@ -9,19 +9,19 @@ def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connection established")
     else:
-        print("Bad connection")
+        print(f"Couldn't connect to the broker {broker_address}")
 
 
 def on_disconnect():
-    print("Disconnected from broker")
+    print("Disconnected from the broker")
 
 
 def on_message(client, userdata, message):
     message_decoded = (str(message.payload.decode("utf-8"))).split(".")
     if len(message_decoded) == 2:
-        card = message_decoded[0]
-        terminal = message_decoded[1]
-        registration(card, terminal)
+        card_id = message_decoded[0]
+        terminal_id = message_decoded[1]
+        registration(card_id, terminal_id)
         return message_decoded
     else:
         print("Wrong message")
