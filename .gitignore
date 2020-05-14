@@ -2,3 +2,6 @@
 __pycache__/
 venv/
 docs/
+certs/
+screens/
+*.csv

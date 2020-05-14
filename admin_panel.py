@@ -1,15 +1,15 @@
 import sys
 from app.data_operations import *
 from app.reports import generate_report
-
+from settings import cards as simulation_cards
 
 def extended_input(min, max, label=""):
     while True:
         try:
             num = int(input(label))
-            if min <= num < max:
+            if min <= num <= max:
                 return num
-            print(f"Number should be between {min} and {max - 1}")
+            print(f"Number should be between {min} and {max}")
         except Exception:
             print("Invalid input")
 
@@ -19,7 +19,7 @@ def choose_from_dict(dict, label):
     for i, data in enumerate(dict):
         print(f"({i}). {data} {dict[data]}")
     print(f"({i + 1}). CANCEL")
-    num = extended_input(0, len(dict.keys()) + 1)
+    num = extended_input(0, len(dict.keys()))
     if num == i + 1: return None
     id = list(dict.items())[int(num)][0]
     return id
@@ -30,7 +30,7 @@ def choose_from_list(list, label):
     for i, data in enumerate(list):
         print(f"({i}). {data}")
     print(f"({i + 1}). CANCEL")
-    num = extended_input(0, len(list) + 1)
+    num = extended_input(0, len(list))
     if num == i + 1: return None
     id = list[num]
     return id
@@ -74,9 +74,11 @@ def unassign_card_ui():
 
 
 def simulate_client():
-    test_cards = dict.copy(cards)
-    test_cards['[176, 111, 225, 37, 27]'] = {}
-    test_cards['[217, 125, 80, 211, 39]'] = {}
+    test_cards = {}
+    for simulation_card in simulation_cards:
+        test_cards[simulation_card] = {}
+    for card in cards:
+        test_cards[card] = cards[card]
     card_id = choose_from_dict(test_cards, "Choose card ID: ")
     terminal_id = choose_from_dict(terminals, "Select terminal ID: ")
     return card_id, terminal_id
@@ -123,13 +125,17 @@ def remove_card_ui():
         remove_card(card_id)
 
 
-def run_menu(menu):
+def run_menu(menu, cancel_button=True):
     for i, command in enumerate(menu):
         print(f"({i + 1}). {command[0]}")
     i += 1
-    print(f"({i + 1}). CANCEL")
-    choice = extended_input(1, len(menu) + 2)
-    if choice == i + 1: return
+
+    if cancel_button:
+        i+=1
+        print(f"({i}). CANCEL")
+    choice = extended_input(1, i+1)
+    if cancel_button and choice == i: return
+
     function = menu[int(choice) - 1][1]
     function()
 
@@ -157,7 +163,7 @@ def admin_panel_run():
     ]
 
     while True:
-        run_menu(menu)
+        run_menu(menu, cancel_button=False)
 
 
 if __name__ == "__main__":

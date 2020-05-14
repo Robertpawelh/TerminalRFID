@@ -1,11 +1,8 @@
 {
   "1": {
-    "name": "Terminal 1 "
+    "name": "Terminal 1"
   },
   "2": {
     "name": "Terminal 2"
-  },
-  "3": {
-    "name": "Terminal 3"
   }
 }

@@ -1,10 +1,11 @@
 scan_topic = "card/terminal"
 
-broker_address = "127.0.0.1"
+broker_address = "DESKTOP-BMJ8G1O" # hostname provided in certificate config
+port = 8883 # port for TLS
 
 """ Data for simulation """
 cards = ["[173, 124, 223, 37, 41]",
          "[434, 343]",
-         "[535332]",
+         "[177, 224, 323, 27, 44]",
          "[123 332]"
          ]

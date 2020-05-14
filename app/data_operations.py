@@ -47,7 +47,7 @@ def remove_data(path, dictionary, id):
 
 def add_worker(name):
     id = uuid.uuid1().int
-    worker_data = {'name': name, 'card_id': None}
+    worker_data = {'name': name, 'card_id': []}
     add_data_to_id(workers_filename, workers, worker_data, id)
 
 
@@ -90,7 +90,7 @@ def assign_card_id(worker_id, card_id):
         else:
             logger.log("Card is already assigned")
     else:
-        logger.log("Operation didn't succeed")
+        logger.log("Operation failed")
 
 
 def unassign_card_id(worker_id, card_id):
@@ -120,7 +120,7 @@ def registration(card_id, terminal_id):
         worker = 'UNKNOWN'
 
     if worker is 'UNKNOWN':
-        print('Unidentified card. ', end='')
+        logger.log("Unidentified card. ", False)
 
     if card_id in registrations:
         data = registrations[card_id]
@@ -135,6 +135,7 @@ def registration(card_id, terminal_id):
                 logger.log(f"Worker finished job at {date}")
         else:
             data[worker] = {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}
+            logger.log(f"Worker started job at {date}")
 
     else:
         registrations[card_id] = {worker: {'begin': [date], 'begin_t': [terminal_id], 'end': [], 'end_t': []}}
