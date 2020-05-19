@@ -33,6 +33,8 @@ def scan():
             call_msg(cards[index])
             time.sleep(1)
             logger.log("Waiting for a card")
+        if keyboard.is_pressed('q'):
+            sys.exit()
 
 def enter_login_details():
     login = input("Enter login: ")
@@ -40,7 +42,7 @@ def enter_login_details():
     return login, password
 
 def client_run():
-    logger.log(f"Terminal name: {terminal_id}")
+    logger.log(f"Terminal ID: {terminal_id}")
     logger.log(f"Keys for simulation:  {[(keys_shift+i)%10 for i in range(len(cards))]}")
     client.on_connect = on_connect
     client.on_disconnect = on_disconnect

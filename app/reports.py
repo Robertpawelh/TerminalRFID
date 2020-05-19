@@ -26,3 +26,4 @@ def generate_report(worker_id):
                                  None,
                                  None,
                                  card_id])
+    logger.log("Report generated.")

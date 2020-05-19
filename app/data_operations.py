@@ -82,7 +82,7 @@ def remove_terminal(terminal_id):
 def assign_card_id(worker_id, card_id):
     if worker_id in workers and card_id in cards:
         if not cards[card_id]['owner_id']:
-            workers[worker_id]['card_id'].append(card_id)
+            workers[worker_id]['card_id'] = card_id
             cards[card_id]['owner_id'] = worker_id
             write_data(workers_filename, workers)
             write_data(cards_filename, cards)
@@ -96,7 +96,7 @@ def assign_card_id(worker_id, card_id):
 def unassign_card_id(worker_id, card_id):
     if worker_id in workers:
         if card_id in workers[worker_id]['card_id']:
-            workers[worker_id]['card_id'].remove(card_id)
+            workers[worker_id]['card_id'] = None
             cards[card_id]['owner_id'] = None
             write_data(workers_filename, workers)
             write_data(cards_filename, cards)
